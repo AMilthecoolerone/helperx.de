@@ -27,22 +27,16 @@
     };
 
     toggle.addEventListener('click', toggleNav);
-
-    // Close when clicking/tapping outside
     document.addEventListener('pointerdown', (e) => {
       if (!nav.classList.contains('show')) return;
       if (toggle.contains(e.target) || nav.contains(e.target)) return;
       setClosed();
     });
-
-    // Ensure nav is closed when resizing to desktop
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768) {
         setClosed();
       }
     });
-
-    // Close on Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') setClosed();
     });
