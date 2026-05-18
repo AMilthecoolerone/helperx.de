@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apply - HelperX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <style>
+    :root {
+      --bg: #05070d;
+      --primary: #6366f1;
+      --primary2: #818cf8;
+      --accent: #f472b6;
+      --text: #ffffff;
+      --text-muted: #9ca3af;
+      --border: #1e293b;
+    }
+ 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+    body {
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(244,114,182,0.08), transparent),
+        radial-gradient(circle at top, #0b0f1a, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+ 
+    .apply-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 24px 60px;
+    }
+ 
+    .apply-container { width: 100%; max-width: 600px; }
+ 
+    .apply-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary2);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+ 
+    .apply-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--primary2);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary2);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+ 
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+ 
+    .apply-title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(36px, 6vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+ 
+    .apply-title span {
+      background: linear-gradient(135deg, var(--primary2) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+ 
+    .apply-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+ 
+    .form-card {
+      background: rgba(13,17,23,0.7);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 36px;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(99,102,241,0.05),
+        0 24px 48px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+ 
+    
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: block;
+    }
+ 
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+ 
+    .role-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 10px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+      user-select: none;
+      position: relative;
+    }
+ 
+    .role-card:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(99,102,241,0.35);
+      transform: translateY(-2px);
+    }
+ 
+    .role-card.selected {
+      background: rgba(99,102,241,0.1);
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+ 
+    .check-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      transition: all 0.2s ease;
+    }
+ 
+    .role-card.selected .check-badge {
+      background: var(--primary);
+      border-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    .role-card.selected .check-badge::after {
+      content: '';
+      width: 5px; height: 5px;
+      background: white;
+      border-radius: 50%;
+    }
+ 
+    .role-emoji { font-size: 22px; line-height: 1; }
+    .role-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .role-desc { font-size: 11px; color: var(--text-muted); }
+ 
+    .role-error {
+      font-size: 12px;
+      color: #f87171;
+      margin-top: 8px;
+      display: none;
+    }
+    .role-error.show { display: block; }
+ 
+    .form-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 24px 0;
+    }
+ 
+    
+    .field-group { display: flex; gap: 16px; margin-bottom: 16px; }
+    .field { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+ 
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+ 
+    .field input, .field textarea {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: "Inter", sans-serif;
+      width: 100%;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+ 
+    .field input::placeholder, .field textarea::placeholder {
+      color: rgba(156,163,175,0.4);
+    }
+ 
+    .field input:focus, .field textarea:focus {
+      border-color: rgba(99,102,241,0.5);
+      background: rgba(99,102,241,0.05);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+ 
+    .field textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+    .field-full { margin-bottom: 16px; }
+ 
+    .field select {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: "Inter", sans-serif;
+      width: 100%;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    .field select option { background: #0d1117; color: var(--text); }
+    .field select:focus {
+      border-color: rgba(99,102,241,0.5);
+      background-color: rgba(99,102,241,0.05);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+ 
+    
+    .submit-btn {
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary2) 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .submit-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--primary2) 0%, var(--primary) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+ 
+    .submit-btn:hover::before { opacity: 1; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.5); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn span, .submit-btn svg { position: relative; z-index: 1; }
+    .submit-btn svg { transition: transform 0.3s ease; }
+    .submit-btn:hover svg { transform: translateX(3px); }
+    .submit-btn.loading { pointer-events: none; opacity: 0.7; }
+ 
+    
+    .success-msg { display: none; text-align: center; padding: 32px 24px; animation: fadeUp 0.4s ease forwards; }
+    .success-msg.show { display: block; }
+    .success-icon {
+      width: 56px; height: 56px;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .success-msg h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .success-msg p { font-size: 14px; color: var(--text-muted); }
+ 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    .error-banner {
+      display: none;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #f87171;
+      margin-bottom: 16px;
+    }
+    .error-banner.show { display: block; }
+ 
+    .form-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: rgba(156,163,175,0.5);
+      text-align: center;
+    }
+ 
+    @media (max-width: 520px) {
+      .field-group { flex-direction: column; }
+      .form-card { padding: 24px 20px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+ 
+<header class="navbar">
+  <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">HelperX</a></div>
+  <button class="nav-toggle" aria-expanded="false" aria-label="Open menu">
+    <span class="hamburger"></span>
+  </button>
+  <nav class="nav-links" id="primary-nav">
+    <a href="features.html">Features</a>
+    <a href="commands.html">Commands</a>
+    <a href="setup.html">Setup</a>
+    <a href="team.html" class="active">Team</a>
+    <a href="socialmedia.html">Social Media</a>
+    <a href="support.html">Support</a>
+    <a href="datenschutz.html">Privacy</a>
+    <button class="btn primary"><a target="_blank" rel="noopener noreferrer" class="bot_einladen" href="https://discord.gg/sERgKbGW8N">Invite Bot</a></button>
+  </nav>
+</header>
+ 
+<div class="apply-wrapper">
+  <div class="apply-container">
+ 
+    <div class="apply-eyebrow">Now Recruiting</div>
+    <h1 class="apply-title">Join the <span>HelperX</span> Team</h1>
+    <p class="apply-subtitle">We're looking for passionate people to help grow the community. Pick a role and tell us about yourself.</p>
+ 
+    <div class="form-card">
+      <div class="error-banner" id="error-banner">Something went wrong. Please try again.</div>
+ 
+      <div id="form-content">
+        <form onsubmit="sendMessage(event)">
+ 
+          <span class="section-label">Select a role</span>
+          <div class="role-grid">
+            <div class="role-card" data-role="Developer" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">💻</div>
+              <div class="role-name">Developer</div>
+              <div class="role-desc">Bot & web</div>
+            </div>
+            <div class="role-card" data-role="Moderator" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">🛡️</div>
+              <div class="role-name">Moderator</div>
+              <div class="role-desc">Keep the peace</div>
+            </div>
+            <div class="role-card" data-role="Designer" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">🎨</div>
+              <div class="role-name">Designer</div>
+              <div class="role-desc">UI & graphics</div>
+            </div>
+            <div class="role-card" data-role="Support" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">🎧</div>
+              <div class="role-name">Support</div>
+              <div class="role-desc">Help members</div>
+            </div>
+            <div class="role-card" data-role="Social Media" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">📢</div>
+              <div class="role-name">Social Media</div>
+              <div class="role-desc">Grow the brand</div>
+            </div>
+            <div class="role-card" data-role="Manager" onclick="selectRole(this)">
+              <div class="check-badge"></div>
+              <div class="role-emoji">📋</div>
+              <div class="role-name">Manager</div>
+              <div class="role-desc">Organise & lead</div>
+            </div>
+          </div>
+          <div class="role-error" id="role-error">Please select a role before submitting.</div>
+ 
+          <div class="form-divider"></div>
+ 
+          
+          <span class="section-label">About you</span>
+          <div class="field-group">
+            <div class="field">
+              <label for="your-name">Full Name</label>
+              <input type="text" id="your-name" placeholder="Your name" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field">
+              <label for="discord">Discord Username</label>
+              <input type="text" id="discord" placeholder="@username" required>
+            </div>
+            <div class="field">
+              <label for="age">Age</label>
+              <input type="number" id="age" placeholder="e.g. 18" min="13" max="99" required>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field">
+              <label for="timezone">Timezone</label>
+              <input type="text" id="timezone" placeholder="e.g. UTC+1, CET, EST" required>
+            </div>
+            <div class="field">
+              <label for="hours">Hours per week</label>
+              <input type="text" id="hours" placeholder="e.g. 10–15 hrs" required>
+            </div>
+          </div>
+ 
+          <div class="form-divider"></div>
+ 
+         
+          <span class="section-label">Experience</span>
+          <div class="field field-full">
+            <label for="experience">Relevant experience</label>
+            <textarea id="experience" placeholder="Describe your past experience. Previous servers, projects, tools you've used..." required style="min-height:100px"></textarea>
+          </div>
+          <div class="field field-full">
+            <label for="skills">Key skills &amp; tools</label>
+            <textarea id="skills" placeholder="e.g. JavaScript, Discord.js, Figma, social media platforms..." required style="min-height:80px"></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field">
+              <label for="exp-level">Experience level</label>
+              <select id="exp-level" required>
+                <option value="" disabled selected>Select level</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Expert">Expert</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="prev-team">Been on a team before?</label>
+              <select id="prev-team" required>
+                <option value="" disabled selected>Select one</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+ 
+          <div class="form-divider"></div>
+ 
+          
+          <span class="section-label">Motivation</span>
+          <div class="field field-full">
+            <label for="why-do-you-wanna-join">Why do you want to join HelperX?</label>
+            <textarea id="why-do-you-wanna-join" placeholder="What motivates you? What would you bring to the team?" required></textarea>
+          </div>
+          <div class="field field-full">
+            <label for="scenario">Scenario question</label>
+            <textarea id="scenario" placeholder="A user is being toxic in the server and ignoring warnings. What do you do?" required style="min-height:100px"></textarea>
+          </div>
+          <div class="field field-full">
+            <label for="extra">Anything else? (optional)</label>
+            <textarea id="extra" placeholder="Portfolio links, references, extra info..." style="min-height:80px"></textarea>
+          </div>
+ 
+          <div class="form-divider"></div>
+ 
+          <button type="submit" class="submit-btn" id="submit-btn">
+            <span>Submit Application</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </form>
+ 
+        <p class="form-note">Your application is sent directly to our team via Discord.</p>
+      </div>
+ 
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Application Sent!</h3>
+        <p>Thanks for applying. We'll review your application and get back to you soon.</p>
+      </div>
+    </div>
+ 
+  </div>
+</div>
+ 
+<script>
+  let selectedRole = null;
+ 
+  function selectRole(card) {
+    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedRole = card.dataset.role;
+    document.getElementById('role-error').classList.remove('show');
+  }
+ 
+  function sendMessage(event) {
+    event.preventDefault();
+ 
+    if (!selectedRole) {
+      document.getElementById('role-error').classList.add('show');
+      return;
+    }
+ 
+    const name     = document.getElementById("your-name").value;
+    const email    = document.getElementById("email").value;
+    const discord  = document.getElementById("discord").value;
+    const age      = document.getElementById("age").value;
+    const timezone = document.getElementById("timezone").value;
+    const hours    = document.getElementById("hours").value;
+    const expLevel = document.getElementById("exp-level").value;
+    const prevTeam = document.getElementById("prev-team").value;
+    const experience = document.getElementById("experience").value;
+    const skills   = document.getElementById("skills").value;
+    const reason   = document.getElementById("why-do-you-wanna-join").value;
+    const scenario = document.getElementById("scenario").value;
+    const extra    = document.getElementById("extra").value;
+    const btn      = document.getElementById("submit-btn");
+    const error    = document.getElementById("error-banner");
+    
+ 
+    btn.classList.add("loading");
+    btn.querySelector("span").textContent = "Sending…";
+    error.classList.remove("show");
+ 
+    fetch("https://summer-moon-02c6.amil-muslioski.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: "HelperX Applications",
+        avatar_url: "https://cdn.discordapp.com/attachments/1505668704115884184/1505674214236229743/baabc19245ed032be2020f4b6a2f169e.png",
+        embeds: [{
+          title: "📋 New Team Application",
+          color: 0x6366f1,
+          fields: [
+            { name: "🏷️ Role",            value: selectedRole,          inline: true  },
+            { name: "👤 Name",            value: name,                  inline: true  },
+            { name: "🎮 Discord",         value: discord,               inline: true  },
+            { name: "📧 Email",           value: email,                 inline: true  },
+            { name: "🎂 Age",             value: age,                   inline: true  },
+            { name: "🌍 Timezone",        value: timezone,              inline: true  },
+            { name: "⏱️ Hours / week",    value: hours,                 inline: true  },
+            { name: "📊 Experience level",value: expLevel,              inline: true  },
+            { name: "👥 Prior team exp.", value: prevTeam,              inline: true  },
+            { name: "🛠️ Experience",      value: experience,            inline: false },
+            { name: "⚙️ Skills & Tools",  value: skills,                inline: false },
+            { name: "💬 Why HelperX?",    value: reason,                inline: false },
+            { name: "🧩 Scenario answer", value: scenario,              inline: false },
+            ...(extra ? [{ name: "📎 Additional info", value: extra, inline: false }] : [])
+          ],
+          footer: { text: "HelperX Applications" },
+          timestamp: new Date().toISOString()
+        }]
+      })
+    }).then(res => {
+      if (res.ok) {
+        document.getElementById("form-content").style.display = "none";
+        document.getElementById("success-msg").classList.add("show");
+      } else {
+        error.textContent = "Something went wrong (status " + res.status + "). Please try again.";
+        error.classList.add("show");
+        btn.classList.remove("loading");
+        btn.querySelector("span").textContent = "Submit Application";
+      }
+    }).catch(() => {
+      error.textContent = "Network error. Check your connection and try again.";
+      error.classList.add("show");
+      btn.classList.remove("loading");
+      btn.querySelector("span").textContent = "Submit Application";
+    });
+  }
+ 
+  const toggle = document.querySelector('.nav-toggle');
+  const nav    = document.getElementById('primary-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('show');
+      toggle.setAttribute('aria-expanded', open);
+    });
+  }
+</script>
+</body>
+</html>
