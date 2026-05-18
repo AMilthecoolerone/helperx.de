@@ -26,18 +26,25 @@ html, body {
   scroll-behavior: smooth;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 
 body {
   font-family: "Inter", sans-serif;
   background: 
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(244, 114, 182, 0.08), transparent),
-    radial-gradient(circle at top, #0b0f1a, var(--bg));
+    var(--bg);
   color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
+  background-attachment: fixed;
 }
-
+.page-content {
+  flex:1;
+}
 /* NAVBAR */
 .navbar {
   display: flex;
@@ -253,7 +260,27 @@ nav a.active {
   border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 100px;
   letter-spacing: 0.5px;
-  margin-bottom: 24px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  
+  
+}
+
+
+.hero-left #badge {
+  display: block;
+  margin-top: 8px;
+  width: 220px;
+  max-width: 100%;
+  height: 28px;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .hero-left #badge {
+    width: 180px;
+    margin-left: 0;
+  }
 }
 
 h1 {
@@ -381,6 +408,18 @@ h1 span {
 
 }
  
+
+
+.apply-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 50%;
+  margin: 0 auto;
+}
+
+
 .dot-discord {
   display: none;
 }
@@ -526,7 +565,15 @@ h1 span {
     flex-direction: row;
     justify-content: center;
   }
+  .betterstack {
+    display: flex;
+    justify-content: center;
+    transform: translateX(20px);
+  }
+
 }
+
+
 
 @media (max-width: 640px) {
   .navbar {
@@ -537,7 +584,7 @@ h1 span {
     display: none;
   }
 
-  /* When mobile panel is open, show the links inside it */
+ 
   .nav-links.show a:not(.btn) {
     display: block;
   }
